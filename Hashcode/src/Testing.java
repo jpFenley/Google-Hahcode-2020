@@ -10,18 +10,19 @@ import java.util.Scanner;
 public class Testing {
   public static Book[] books; // All books
   public static Library[] libraries; // All libraries
-  public static HashMap<Integer, ArrayList<Book>> assigned = new HashMap<Integer, ArrayList<Book>>();
+  public static HashMap<Integer, ArrayList<Book>> assigned =
+      new HashMap<Integer, ArrayList<Book>>();
 
   public static void main(String[] args) throws FileNotFoundException {
     File data = new File("c_incunabula.txt");
     Scanner scnr = new Scanner(data);
-    
+
     int numBooks = scnr.nextInt();
     int numLibraries = scnr.nextInt();
     int days = scnr.nextInt();
     scnr.nextLine();
 
-    books = new Book[numBooks]; 
+    books = new Book[numBooks];
     for (int i = 0; i < books.length; ++i) {
       Book newBook = new Book(i, scnr.nextInt());
       books[i] = newBook;
@@ -40,26 +41,16 @@ public class Testing {
       Arrays.sort(newLibrary.books);
       libraries[i] = newLibrary;
     }
-    
-    
-//////////////////////////////////////////Debugging///////////////////////////////////////////////
-//    for (Library lib: libraries) {
-//      System.out.println("Library with ID: " + lib.ID + " has books " );
-//      for (Book book: lib.books) {
-//        System.out.print( book.score + ",  " );
-//      }
-//      System.out.println();
-//    }
-//////////////////////////////////////////Debugging///////////////////////////////////////////////
-    
-    Library signingUp = null; 
+
+
+    Library signingUp = null;
     boolean signUpInProgress = false;
     ArrayList<Library> orderOpened = new ArrayList<Library>();
-    
+
     for (int day = 0; day < days; ++day) {
       System.out.println("The day is: " + day + ", " + orderOpened.size() + " libraries are open.");
-      if(signingUp != null) { // Check a library is signing up
-        if(signingUp.daysRemainingSignup == 0) { // If done, then add it to list of open libraries
+      if (signingUp != null) { // Check a library is signing up
+        if (signingUp.daysRemainingSignup == 0) { // If done, then add it to list of open libraries
           signUpInProgress = false;
           orderOpened.add(signingUp);
           signingUp.active = true;
@@ -70,76 +61,30 @@ public class Testing {
       if (signUpInProgress == false) {
         signingUp = chooseLibrary(days - day);
       }
-      
+
       assignBooks();
-      
+
       if (signingUp != null) {
         signingUp.daysRemainingSignup -= 1;
       }
     }
-    
-  File output = new File("output3.txt");
-  PrintWriter results = new PrintWriter(output);
 
-  results.print(orderOpened.size() + "\n");
-  for (Library lib : orderOpened) {
-    ArrayList<Book> bookValues = assigned.get(lib.ID);
-    System.out.println(bookValues + " b" + lib.ID);
-    results.print(lib.ID + " " + bookValues.size() + "\n");
-    for (Book b : bookValues) {
-      results.print(b.ID + " ");
+    File output = new File("output3.txt");
+    PrintWriter results = new PrintWriter(output);
+
+    results.print(orderOpened.size() + "\n");
+    for (Library lib : orderOpened) {
+      ArrayList<Book> bookValues = assigned.get(lib.ID);
+      System.out.println(bookValues + " b" + lib.ID);
+      results.print(lib.ID + " " + bookValues.size() + "\n");
+      for (Book b : bookValues) {
+        results.print(b.ID + " ");
+      }
+      results.println();
     }
-    results.println();
+    results.close();
   }
-  results.close();
-    
-  
-  }
-    
-    
-    
-    
-    
-//    int librarySigningUp = chooseLibrary(days);
-//    boolean signupInProgress = true;
-//    ArrayList<Library> orderOpened = new ArrayList<Library>();
-//    assigned = new HashMap<Integer, ArrayList<Book>>();
-//
-//    for (int i = 0; i < days; ++i) {
-//
-//      libraries[librarySigningUp].daysRemainingSignup -= 1;
-//      if (libraries[librarySigningUp].daysRemainingSignup == -1) {
-//        orderOpened.add(libraries[librarySigningUp]);
-//        System.out.println(libraries.length);
-//        signupInProgress = false;
-//        libraries[librarySigningUp].active = true;
-//      }
-//      if (!signupInProgress) {
-//        int nextLibraryIndex = chooseLibrary(days - i);
-//        if (nextLibraryIndex != -1) {
-//          signupInProgress = true;
-//          librarySigningUp = nextLibraryIndex;
-//        }
-//      }
-//      assignBooks();
-//      System.out.println(assigned);
-//    }
-//
-//    File output = new File("output.txt");
-//    PrintWriter results = new PrintWriter(output);
-//
-//    results.print(orderOpened.size() + "\n");
-//    for (Library lib : orderOpened) {
-//      ArrayList<Book> bookValues = assigned.get(lib.ID);
-//      System.out.println(bookValues + " b" + lib.ID);
-//      results.print(lib.ID + " " + bookValues.size() + "\n");
-//      for (Book b : bookValues) {
-//        results.print(b.ID + " ");
-//      }
-//    }
-//    results.close();
-//
-//  }
+
 
   public static Library chooseLibrary(int daysLeft) {
     double max = Integer.MIN_VALUE;
@@ -153,7 +98,7 @@ public class Testing {
     return maxScoring; // return max score
   }
 
-  public static  double libraryScore(Library lib, int daysLeft) {
+  public static double libraryScore(Library lib, int daysLeft) {
     double score = 0;
     int booksToAdd = lib.booksPerDay * (daysLeft - lib.daysSetup);
     int booksAdded = 0;
@@ -167,46 +112,25 @@ public class Testing {
   }
 
   public static void assignBooks() {
-      for (Library lib : libraries) { // For each library
-          if (lib.active) { // If it is active
-            int booksAdded = 0; 
-  
-            for (int m = 0; m < lib.numBooks; ++m) {
-                if (!lib.books[m].scanned) {
-                    if (assigned.get(lib.ID) == null) {
-                      assigned.put(lib.ID, new ArrayList<Book>());
-                    }
-                    assigned.get(lib.ID).add(lib.books[m]);
-                    lib.books[m].scanned = true;
-                    booksAdded++;
-   
-                    if (booksAdded == lib.booksPerDay) {
-                        break;
-                    }
-                }
+    for (Library lib : libraries) { // For each library
+      if (lib.active) { // If it is active
+        int booksAdded = 0;
+
+        for (int m = 0; m < lib.numBooks; ++m) {
+          if (!lib.books[m].scanned) {
+            if (assigned.get(lib.ID) == null) {
+              assigned.put(lib.ID, new ArrayList<Book>());
+            }
+            assigned.get(lib.ID).add(lib.books[m]);
+            lib.books[m].scanned = true;
+            booksAdded++;
+
+            if (booksAdded == lib.booksPerDay) {
+              break;
             }
           }
+        }
       }
+    }
   }
-        
-        
-        
-//          if (!lib.books[m].scanned) {
-//            if (assigned.containsKey(lib.ID)) {
-//              assigned.get(lib.ID).add(lib.books[m]);
-//              lib.books[m].scanned = true;
-//              booksAdded++;
-//            } else {
-//              assigned.put(lib.ID, new ArrayList<Book>());
-//              assigned.get(lib.ID).add(lib.books[m]);
-//              System.out.println(assigned.get(lib.ID));
-//              lib.books[m].scanned = true;
-//              booksAdded++;
-//            }
-//          }
-//        }
-//      }
-//    }
-  
-
 }
