@@ -5,4 +5,4 @@ We optimized maximum score per library per day, which scored the maximum possibl
 performed poorly on others. A better approach would have been to optimize the maximum number of libraries that
 could be completed to begin scanning.
 
-![Scoreboard]{https://github.com/jpFenley/Google-Hashcode-2020/blob/master/Outputs/scores.png}
+![Scoreboard](https://github.com/jpFenley/Google-Hashcode-2020/blob/master/Outputs/scores.png)
